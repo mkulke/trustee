@@ -28,11 +28,15 @@ async fn main() -> Result<()> {
 
     let mut attestation_agent = AttestationAgent::new();
 
-    let resource_byte = attestation_agent
+    let resource_bytes = attestation_agent
         .download_confidential_resource(CC_KBC_NAME, &cli.resource_uri)
         .await?;
 
-    println!("Resource: {:?}", &resource_byte);
+    let byte_str: String = resource_bytes
+        .iter()
+        .map(|bytes| format!("{:02x}", bytes))
+        .collect();
+    println!("{byte_str}");
 
     Ok(())
 }
