@@ -359,7 +359,7 @@ dependencies = [
 [[package]]
 name = "as-types"
 version = "0.1.0"
-source = "git+https://github.com/mkulke/attestation-service.git?rev=5233244#5233244c5ca53ad450ad2c952b6bb09f667b939a"
+source = "git+https://github.com/mkulke/attestation-service.git?rev=651a9b7#651a9b747bbb7435c682cbf232aa013d2aceb181"
 dependencies = [
  "kbs-types",
  "serde",
@@ -402,7 +402,7 @@ dependencies = [
 [[package]]
 name = "attestation-service"
 version = "0.1.0"
-source = "git+https://github.com/mkulke/attestation-service.git?rev=5233244#5233244c5ca53ad450ad2c952b6bb09f667b939a"
+source = "git+https://github.com/mkulke/attestation-service.git?rev=651a9b7#651a9b747bbb7435c682cbf232aa013d2aceb181"
 dependencies = [
  "anyhow",
  "as-types",
@@ -439,7 +439,7 @@ dependencies = [
 [[package]]
 name = "attestation_agent"
 version = "0.1.0"
-source = "git+https://github.com/mkulke/attestation-agent?rev=334e57d#334e57d20dbd82242c27c6617f0dc0929f72cc5d"
+source = "git+https://github.com/mkulke/attestation-agent?rev=8167df5#8167df572fbb4886bc00579784f3923b6ad6025b"
 dependencies = [
  "aes-gcm",
  "anyhow",
@@ -3842,7 +3842,7 @@ dependencies = [
 [[package]]
 name = "vtpm-snp"
 version = "0.1.0"
-source = "git+https://github.com/kinvolk/azure-cvm-tooling.git?rev=a02e14e#a02e14ec4725c0d7039189612aefa49650b1d0d8"
+source = "git+https://github.com/kinvolk/azure-cvm-tooling.git?rev=7203e90#7203e9079b9a98c82c72781b90dde8abe8f18b74"
 dependencies = [
  "bincode",
  "clap 4.1.8",
