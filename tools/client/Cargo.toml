@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 # attestation_agent = { git = "https://github.com/confidential-containers/attestation-agent" }
-attestation_agent = { git = "https://github.com/mkulke/attestation-agent", rev = "aa76f70", features = ["sev-snp-vtpm-attester"] }
+attestation_agent = { git = "https://github.com/mkulke/attestation-agent", rev = "334e57d", features = ["sev-snp-vtpm-attester"] }
 # attestation_agent = { path = "../../../attestation-agent", features = ["sev-snp-vtpm-attester"] }
 anyhow.workspace = true
 api-server.workspace = true

@@ -359,7 +359,7 @@ dependencies = [
 [[package]]
 name = "as-types"
 version = "0.1.0"
-source = "git+https://github.com/mkulke/attestation-service.git?rev=2dfe425#2dfe4258536471452b308a499faf2d00c9e9172c"
+source = "git+https://github.com/mkulke/attestation-service.git?rev=5233244#5233244c5ca53ad450ad2c952b6bb09f667b939a"
 dependencies = [
  "kbs-types",
  "serde",
@@ -402,7 +402,7 @@ dependencies = [
 [[package]]
 name = "attestation-service"
 version = "0.1.0"
-source = "git+https://github.com/mkulke/attestation-service.git?rev=2dfe425#2dfe4258536471452b308a499faf2d00c9e9172c"
+source = "git+https://github.com/mkulke/attestation-service.git?rev=5233244#5233244c5ca53ad450ad2c952b6bb09f667b939a"
 dependencies = [
  "anyhow",
  "as-types",
@@ -439,13 +439,14 @@ dependencies = [
 [[package]]
 name = "attestation_agent"
 version = "0.1.0"
-source = "git+https://github.com/mkulke/attestation-agent?rev=863aee8#863aee8d3848ec7fd943468001c8f3147c9f0baf"
+source = "git+https://github.com/mkulke/attestation-agent?rev=334e57d#334e57d20dbd82242c27c6617f0dc0929f72cc5d"
 dependencies = [
  "aes-gcm",
  "anyhow",
  "async-trait",
  "base64 0.13.1",
  "ctr",
+ "hex",
  "kbs-types",
  "log",
  "rand",
@@ -1630,6 +1631,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyper-rustls"
+version = "0.23.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1788965e61b367cd03a62950836d5cd41560c3577d90e40e0819373194d1661c"
+dependencies = [
+ "http",
+ "hyper",
+ "rustls",
+ "tokio",
+ "tokio-rustls",
+]
+
+[[package]]
 name = "hyper-timeout"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2800,6 +2814,7 @@ dependencies = [
  "http",
  "http-body",
  "hyper",
+ "hyper-rustls",
  "hyper-tls",
  "ipnet",
  "js-sys",
@@ -2809,16 +2824,20 @@ dependencies = [
  "once_cell",
  "percent-encoding",
  "pin-project-lite",
+ "rustls",
+ "rustls-pemfile",
  "serde",
  "serde_json",
  "serde_urlencoded",
  "tokio",
  "tokio-native-tls",
+ "tokio-rustls",
  "tower-service",
  "url",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
+ "webpki-roots",
  "winreg",
 ]
 
@@ -3823,7 +3842,7 @@ dependencies = [
 [[package]]
 name = "vtpm-snp"
 version = "0.1.0"
-source = "git+https://github.com/kinvolk/azure-cvm-tooling.git?rev=08c6ab4#08c6ab4066b17870e364194961dbb8bd8ff812a2"
+source = "git+https://github.com/kinvolk/azure-cvm-tooling.git?rev=a02e14e#a02e14ec4725c0d7039189612aefa49650b1d0d8"
 dependencies = [
  "bincode",
  "clap 4.1.8",
