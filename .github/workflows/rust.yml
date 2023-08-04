@@ -1,25 +1,13 @@
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "mkulke/gha-test" ]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   ci:
-    strategy:
-      matrix:
-        rust:
-          - stable
-          - beta
-          - nightly
-        os:
-          - ubuntu-latest
-
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
     steps:
     - name: Code checkout
       uses: actions/checkout@v3
@@ -28,44 +16,9 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: ${{ matrix.rust }}
+        toolchain: 1.69.0
         override: true
-        components: rustfmt, clippy
-        target: x86_64-unknown-linux-gnu
+        default: false
 
-    - name: Building dependencies installation
-      run: |
-        sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libtss2-dev
-
-    - name: Install TPM dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libtss2-dev
-
-    - name: Install TDX dependencies
-      run: |
-        sudo curl -L https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key | sudo apt-key add -
-        sudo echo 'deb [arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu focal main' | sudo tee /etc/apt/sources.list.d/intel-sgx.list
-        sudo apt-get update
-        sudo apt-get install -y libtdx-attest-dev libsgx-dcap-quote-verify-dev
-
-    - name: KBS Build [Default]
-      run: make kbs
-
-    - name: KBS Build [Built-in CoCo AS, OpenSSL]
-      run: make kbs-coco-as-openssl
-
-    - name: KBS Build [gRPC CoCo AS, RustTLS]
-      run: make kbs-coco-as-grpc
-
-    - name: build KBS with amber AS mode
-      run: make kbs-amber-as
-
-    - name: Lint
-      run: make lint
-
-    - name: Format
-      run: make format
-
-    - name: Test
-      run: make check
+    - name: rust version
+      run: rustc --version
