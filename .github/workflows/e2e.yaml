@@ -20,8 +20,9 @@ jobs:
         tee:
         - sample
         - az-snp-vtpm
+        - az-tdx-vtpm
 
-    runs-on: ${{ ((matrix.tee == 'az-snp-vtpm') && fromJSON('["self-hosted","az-cvm-snp"]')) || 'ubuntu-22.04' }}
+    runs-on: ${{ ((matrix.tee == 'az-snp-vtpm') && fromJSON('["self-hosted","az-cvm-snp"]')) || ((matrix.tee == 'az-tdx-vtpm') && fromJSON('["self-hosted","az-cvm-tdx"]')) || 'ubuntu-22.04' }}
 
     steps:
     - uses: actions/checkout@v4
@@ -59,6 +60,44 @@ jobs:
     - name: Set cc_kbc sample attester env
       if: matrix.tee == 'sample'
       run: echo "AA_SAMPLE_ATTESTER_TEST=1" >> "$GITHUB_ENV"
+
+    - name: Install TDX dependencies
+      if: matrix.tee == 'az-tdx-vtpm'
+      run: |
+        curl -fsSL https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key | sudo apt-key add -
+        echo 'deb [arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu focal main' | sudo tee /etc/apt/sources.list.d/intel-sgx.list
+        sudo apt-get update
+        sudo apt-get install -y \
+            libsgx-dcap-default-qpl \
+            libsgx-dcap-quote-verify \
+            libsgx-dcap-quote-verify-dev \
+            libsgx-urts \
+            libtdx-attest \
+            clang \
+            protobuf-compiler
+        cat <<EOF | sudo tee /etc/sgx_default_qcnl.conf
+        {
+          "pccs_url": "https://global.acccache.azure.net/sgx/certification/v3/",
+          "use_secure_cert": true,
+          "collateral_service": "https://api.trustedservices.intel.com/sgx/certification/v4/",
+          "pccs_api_version": "3.1",
+          "retry_times": 6,
+          "retry_delay": 5,
+          "local_pck_url": "http://169.254.169.254/metadata/THIM/sgx/certification/v3/",
+          "pck_cache_expire_hours": 24,
+          "verify_collateral_cache_expire_hours": 24,
+          "custom_request_options": {
+            "get_cert": {
+              "headers": {
+                "metadata": "true"
+              },
+              "params": {
+                "api-version": "2021-07-22-preview"
+              }
+            }
+          }
+        }
+        EOF
 
     - name: Run e2e test
       working-directory: test
