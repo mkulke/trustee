@@ -3,6 +3,10 @@ name: e2e
 on:
   pull_request:
     branches: [ "main" ]
+  push:
+    branches:
+    - experiment/garm
+
 
 # Self-hosted runners do not set -o pipefail otherwise
 defaults:
@@ -15,9 +19,9 @@ jobs:
       matrix:
         tee:
         - sample
-        # - az-snp-vtpm
+        - az-snp-vtpm
 
-    runs-on: ${{ ((matrix.tee == 'az-snp-vtpm') && fromJSON('["self-hosted","azure-cvm"]')) || 'ubuntu-22.04' }}
+    runs-on: ${{ ((matrix.tee == 'az-snp-vtpm') && fromJSON('["self-hosted","az-cvm-snp"]')) || 'ubuntu-22.04' }}
 
     steps:
     - uses: actions/checkout@v4
@@ -43,7 +47,10 @@ jobs:
 
     - name: Install dependencies
       working-directory: test
-      run: sudo make install-dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+        sudo make install-dependencies
 
     - name: Build bins
       working-directory: test

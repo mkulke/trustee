@@ -26,6 +26,7 @@ install-dependencies:
 		build-essential \
 		clang \
 		libsgx-dcap-quote-verify-dev \
+		libssl-dev \
 		libtdx-attest-dev \
 		libtss2-dev \
 		openssl \
