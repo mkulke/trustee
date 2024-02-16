@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+use super::az_snp_vtpm::extend_claim_with_tpm_quote;
 use super::tdx::claims::generate_parsed_claim;
 use super::tdx::quote::{ecdsa_quote_verification, parse_tdx_quote, Quote as TdQuote};
 use super::{TeeEvidenceParsedClaim, Verifier};
@@ -62,7 +63,9 @@ impl Verifier for AzTdxVtpm {
 
         verify_hcl_var_data(&hcl_report, &td_quote)?;
 
-        let claim = generate_parsed_claim(td_quote, None)?;
+        let mut claim = generate_parsed_claim(td_quote, None)?;
+        extend_claim_with_tpm_quote(&mut claim, &evidence.tpm_quote)?;
+
         Ok(claim)
     }
 }
