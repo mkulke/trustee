@@ -9,6 +9,7 @@ MAKEFILE_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 PROJECT_DIR := $(MAKEFILE_DIR)/..
 BOLD := $(shell tput bold)
 SGR0 := $(shell tput sgr0)
+TEE ?= sample
 
 ifeq ($(OS),Ubuntu)
     ifneq ($(RELEASE),22.04)
@@ -17,6 +18,18 @@ ifeq ($(OS),Ubuntu)
 else
     $(error "This Makefile requires Ubuntu")
 endif
+
+define TEE_POLICY
+package policy
+
+default allow = false
+
+allow {
+        input["tee"] == "$(TEE)"
+}
+endef
+export TEE_POLICY
+
 
 .PHONY: install-dependencies
 install-dependencies:
@@ -57,6 +70,9 @@ client:
 
 .PHONY: bins
 bins: kbs resource-kbs client
+
+tee-policy.rego:
+	echo "$$TEE_POLICY" > tee-policy.rego
 
 ca-key.pem:
 	openssl genrsa -traditional -out ca-key.pem 2048
@@ -125,10 +141,10 @@ stop-resource-kbs: resource-kbs.PID
 	@printf "${BOLD}stop resource-kbs${SGR0}\n"
 	kill $$(cat $<) && rm $<
 
-test-bgcheck: client start-kbs
+test-bgcheck: client start-kbs tee-policy.rego
 	RUST_LOG=kbs_protocol=warn ./client \
 		config --auth-private-key kbs.key \
-		set-resource-policy --policy-file $(MAKEFILE_DIR)/data/policy_2.rego && \
+		set-resource-policy --policy-file tee-policy.rego && \
 	RUST_LOG=kbs_protocol=error ./client get-resource \
 		 --path one/two/three \
 		 | base64 -d > roundtrip_secret && \
@@ -141,10 +157,10 @@ attestation_token: client tee.key start-kbs
 		--tee-key-file tee.key \
 		> attestation_token
 
-test-passport: client attestation_token start-resource-kbs
+test-passport: client attestation_token start-resource-kbs tee-policy.rego
 	RUST_LOG=kbs_protocol=warn ./client --url http://127.0.0.1:50002 \
 		config --auth-private-key kbs.key \
-		set-resource-policy --policy-file $(MAKEFILE_DIR)/data/policy_2.rego && \
+		set-resource-policy --policy-file tee-policy.rego && \
 	RUST_LOG=kbs_protocol=warn ./client --url http://127.0.0.1:50002 get-resource \
 		--attestation-token attestation_token \
 		--tee-key-file tee.key \
