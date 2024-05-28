@@ -10,7 +10,7 @@ use scroll::Pread;
 use std::mem;
 use std::time::{Duration, SystemTime};
 
-use sgx_dcap_quoteverify_rs as qvl;
+use intel_tee_quote_verification_rs as qvl;
 
 pub const QUOTE_HEADER_SIZE: usize = 48;
 
@@ -467,7 +467,7 @@ pub async fn ecdsa_quote_verification(quote: &[u8]) -> Result<()> {
     // call DCAP quote verify library for quote verification
     let (collateral_expiration_status, quote_verification_result) = tee_verify_quote(
         quote,
-        collateral.as_deref(),
+        collateral.as_ref(),
         current_time,
         None,
         p_supplemental_data,
@@ -532,7 +532,6 @@ mod tests {
     #[ignore]
     #[tokio::test]
     #[case("./test_data/tdx_quote_4.dat")]
-    #[ignore]
     #[tokio::test]
     #[case("./test_data/tdx_quote_5.dat")]
     async fn test_verify_tdx_quote(#[case] quote: &str) {

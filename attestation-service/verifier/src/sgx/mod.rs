@@ -11,13 +11,13 @@ use std::{
 use anyhow::*;
 use async_trait::async_trait;
 use base64::Engine;
-use log::{debug, warn};
-use scroll::Pread;
-use serde::{Deserialize, Serialize};
-use sgx_dcap_quoteverify_rs::{
+use intel_tee_quote_verification_rs::{
     sgx_ql_qv_result_t, sgx_ql_qv_supplemental_t, tee_get_supplemental_data_version_and_size,
     tee_qv_get_collateral, tee_supp_data_descriptor_t, tee_verify_quote,
 };
+use log::{debug, warn};
+use scroll::Pread;
+use serde::{Deserialize, Serialize};
 
 use crate::{regularize_data, InitDataHash, ReportData};
 
@@ -140,8 +140,6 @@ async fn ecdsa_quote_verification(quote: &[u8]) -> Result<()> {
         }
     };
 
-    let p_collateral: Option<&[u8]> = None;
-
     // set current time. This is only for sample purposes, in production mode a trusted time should be used.
     //
     let current_time = SystemTime::now()
@@ -156,7 +154,7 @@ async fn ecdsa_quote_verification(quote: &[u8]) -> Result<()> {
 
     // call DCAP quote verify library for quote verification
     let (collateral_expiration_status, quote_verification_result) =
-        tee_verify_quote(quote, p_collateral, current_time, None, p_supplemental_data)
+        tee_verify_quote(quote, None, current_time, None, p_supplemental_data)
             .map_err(|e| anyhow!("tee_verify_quote failed: {:#04x}", e as u32))?;
 
     debug!("tee_verify_quote successfully returned.");
