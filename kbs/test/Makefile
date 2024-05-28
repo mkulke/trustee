@@ -19,18 +19,6 @@ else
     $(error "This Makefile requires Ubuntu")
 endif
 
-define TEE_POLICY
-package policy
-
-default allow = false
-
-allow {
-        input["tee"] == "$(TEE)"
-}
-endef
-export TEE_POLICY
-
-
 .PHONY: install-dependencies
 install-dependencies:
 	curl -L "$(SGX_REPO_URL)/intel-sgx-deb.key" | sudo apt-key add - && \
@@ -72,7 +60,7 @@ client:
 bins: kbs resource-kbs client
 
 tee-policy.rego:
-	echo "$$TEE_POLICY" > tee-policy.rego
+	sed s/changeme/$(TEE)/g < $(MAKEFILE_DIR)/data/tee-policy.rego.tmpl > tee-policy.rego
 
 ca-key.pem:
 	openssl genrsa -traditional -out ca-key.pem 2048
