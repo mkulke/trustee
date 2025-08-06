@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - mkulke/test-pr-902
 
 permissions:
   contents: read
